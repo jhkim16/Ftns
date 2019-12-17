@@ -13,7 +13,6 @@
 #include "Ftn2Doc.h"
 #include "Ftn2View.h"
 #include "CLine.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -29,7 +28,9 @@ BEGIN_MESSAGE_MAP(CFtn2View, CView)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 	ON_WM_MOUSEMOVE()
-	ON_COMMAND(ID_SEL_COL, &CFtn2View::OnSelCol)
+	ON_COMMAND(ID_MENU_COL, &CFtn2View::OnMenuCol)
+	ON_COMMAND(ID_SIZE_1, &CFtn2View::OnSize1)
+	ON_COMMAND(ID_SIZE_16, &CFtn2View::OnSize16)
 END_MESSAGE_MAP()
 
 // CFtn2View 생성/소멸
@@ -53,7 +54,7 @@ BOOL CFtn2View::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 // CFtn2View 그리기
-COLORREF col;
+
 void CFtn2View::OnDraw(CDC* pDC)
 {
 	CFtn2Doc* pDoc = GetDocument();
@@ -61,11 +62,13 @@ void CFtn2View::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
-	int n = pDoc->m_oa.GetSize();
-	CLine* p;
+	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	int n = GetDocument()->m_oa.GetSize(); //pDoc로 해도 됨 위에 선언되어있음
 	for (int i = 0; i < n; i++) {
+		CLine* p;
 		p = (CLine*)pDoc->m_oa[i];
 		p->Draw(pDC);
+
 	}
 }
 
@@ -112,23 +115,49 @@ CFtn2Doc* CFtn2View::GetDocument() const // 디버그되지 않은 버전은 인
 
 // CFtn2View 메시지 처리기
 
-CPoint pnt;
+
 void CFtn2View::OnMouseMove(UINT nFlags, CPoint point)
 {
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	if (nFlags == MK_LBUTTON) {
-		CLine* p = new CLine(pnt, point, col);
+		CLine* p = new CLine(pnt, point, size, col);
 		GetDocument()->m_oa.Add(p);
-		Invalidate(false);
+		Invalidate(0);
 	}
+
 	pnt = point;
 	CView::OnMouseMove(nFlags, point);
 }
 
 
-void CFtn2View::OnSelCol()
+void CFtn2View::OnMenuCol()
 {
 	CColorDialog dlg;
 	if (dlg.DoModal() == IDOK) {
 		col = dlg.GetColor();
 	}
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}
+
+
+void CFtn2View::OnSize1()
+{
+	size = 1;
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}
+
+
+void CFtn2View::OnSize16()
+{
+	size = 16;
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}
+
+
+void CFtn2View::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+	col = RGB(0, 255, 0);
+	size = 20;
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 }

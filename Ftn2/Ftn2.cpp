@@ -114,6 +114,9 @@ BOOL CFtn2App::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
+	// DDE Execute 열기를 활성화합니다.
+	EnableShellOpen();
+	RegisterShellFileTypes(TRUE);
 
 
 	// 명령줄에 지정된 명령을 디스패치합니다.
@@ -124,6 +127,10 @@ BOOL CFtn2App::InitInstance()
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+	// 접미사가 있을 경우에만 DragAcceptFiles를 호출합니다.
+	//  SDI 응용 프로그램에서는 ProcessShellCommand 후에 이러한 호출이 발생해야 합니다.
+	// 끌어서 놓기에 대한 열기를 활성화합니다.
+	m_pMainWnd->DragAcceptFiles();
 	return TRUE;
 }
 

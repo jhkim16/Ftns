@@ -3,17 +3,24 @@
 class CLine :
 	public CObject
 {
+	DECLARE_SERIAL(CLine)
 	CPoint m_From, m_To;
-	COLORREF m_col;
-public:
-	CLine(CPoint From, CPoint To, COLORREF col) {
-		m_From = From; m_To = To; m_col = col;
+	int m_Size;
+	COLORREF m_Col;
+public :
+	CLine() {}
+	CLine(CPoint From, CPoint To, int Size, COLORREF Col) {
+		m_From = From;
+		m_To = To;
+		m_Size = Size;
+		m_Col = Col;
 	}
 	void Draw(CDC* pDC) {
-		CPen pen(PS_SOLID, 10, m_col);
+		CPen pen(PS_SOLID, m_Size, m_Col); 
 		pDC->SelectObject(&pen);
 		pDC->MoveTo(m_From);
 		pDC->LineTo(m_To);
 	}
+	virtual void Serialize(CArchive& ar);
 };
 
